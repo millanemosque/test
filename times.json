@@ -1,7 +1,7 @@
 {
- "title": "November 2026 / 1448",
- "updated": "2026-11-04",
- "notice": "",
+ "title": "December 2026 / 1448",
+ "updated": "2026-11-06",
+ "notice": "[TEST] December test",
  "days": [
   {
    "date": "2026-11-06",
@@ -82,6 +82,90 @@
   },
   {
    "date": "2026-11-29",
+   "zuhr": "13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-04",
+   "zuhr": "12:30 & 13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-05",
+   "zuhr": "14:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-06",
+   "zuhr": "14:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-11",
+   "zuhr": "12:30 & 13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-12",
+   "zuhr": "13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-13",
+   "zuhr": "13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-18",
+   "zuhr": "12:30 & 13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-19",
+   "zuhr": "13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-20",
+   "zuhr": "13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-25",
+   "zuhr": "12:30 & 13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-26",
+   "zuhr": "13:00",
+   "asar": "14:30",
+   "maghrib": "After Sunset",
+   "isha": "18:30"
+  },
+  {
+   "date": "2026-12-27",
    "zuhr": "13:00",
    "asar": "14:30",
    "maghrib": "After Sunset",
