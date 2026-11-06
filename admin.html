@@ -35,13 +35,15 @@ button.small{padding:6px 10px;font-size:12px}
 .day.fri{border-top:1px solid var(--line);padding-top:10px;margin-top:4px}
 .day .del{border:none;background:none;color:var(--muted);font-size:18px;padding:0}
 .hdr{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:.5px}
+.f{display:block;min-width:0}
+.f span{display:none}
 @media (max-width:560px){
-  .day{grid-template-columns:1fr 1fr 28px;background:var(--bg);padding:10px;border-radius:12px}
+  .day{grid-template-columns:1fr 1fr;background:var(--bg);padding:10px;border-radius:12px;position:relative}
   .day .dl{grid-column:1/3}
-  .day .del{grid-column:3;grid-row:1}
+  .day .del{position:absolute;top:8px;right:10px}
   .day.fri{border-top:none;margin-top:10px}
   .hdr{display:none}
-  .day input::placeholder{color:var(--muted)}
+  .f span{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:0 0 3px 2px}
 }
 #status{font-size:14px;padding:10px 12px;border-radius:10px;display:none}
 #status.ok{display:block;background:#e7f6ec;color:var(--good)}
@@ -149,10 +151,10 @@ function render(){
     const d=parseISO(r.date), fri=d.getDay()===5;
     return `<div class="day ${fri?"fri":""}" data-i="${i}">
       <div class="dl">${d.toLocaleDateString("en-GB",{weekday:"short"})} ${d.getDate()} ${d.toLocaleDateString("en-GB",{month:"short"})}<small>${fri?"Jumu'ah":"&nbsp;"}</small></div>
-      <input data-k="zuhr" value="${r.zuhr||""}" placeholder="${fri?"Jumu'ah":"Zuhr"}">
-      <input data-k="asar" value="${r.asar||""}" placeholder="Asr" inputmode="decimal">
-      <input data-k="maghrib" value="${r.maghrib||""}" placeholder="Maghrib">
-      <input data-k="isha" value="${r.isha||""}" placeholder="Isha" inputmode="decimal">
+      <label class="f"><span>${fri?"Jumu'ah":"Zuhr"}</span><input data-k="zuhr" value="${r.zuhr||""}" placeholder="${fri?"Jumu'ah":"Zuhr"}"></label>
+      <label class="f"><span>Asr</span><input data-k="asar" value="${r.asar||""}" placeholder="Asr" inputmode="decimal"></label>
+      <label class="f"><span>Maghrib</span><input data-k="maghrib" value="${r.maghrib||""}" placeholder="Maghrib"></label>
+      <label class="f"><span>Isha</span><input data-k="isha" value="${r.isha||""}" placeholder="Isha" inputmode="decimal"></label>
       <button class="del" title="Remove day" data-del="${i}">×</button></div>`;
   }).join("") || `<p class="help">No days yet — create a month above.</p>`;
 }
