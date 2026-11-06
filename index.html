@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mill Lane Prayer Times</title>
+<meta name="description" content="Jama'at prayer times for Mill Lane Muslim Association, Chadwell Heath">
+<meta name="theme-color" content="#0f607c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mill Lane">
+<style>
+:root{
+  --brand:#0f607c; --brand-2:#0b4a60; --accent:#d9a441;
+  --bg:#f3f6f7; --card:#ffffff; --text:#14232a; --muted:#5d6f77; --line:#e3eaed;
+  --today:#e8f3f6; --radius:18px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0c1518; --card:#13222a; --text:#e8f0f2; --muted:#93a8b0; --line:#203540; --today:#163542; }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;background:var(--bg);color:var(--text);
+  -webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom)}
+header{background:linear-gradient(160deg,var(--brand),var(--brand-2));color:#fff;padding:calc(18px + env(safe-area-inset-top)) 18px 70px}
+header .top{display:flex;align-items:center;gap:12px;max-width:560px;margin:0 auto}
+header img{width:40px;height:40px;border-radius:10px}
+header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.2px}
+header p{margin:2px 0 0;font-size:13px;opacity:.8}
+main{max-width:560px;margin:-56px auto 0;padding:0 14px 30px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.next{text-align:center;padding:22px 18px}
+.next .lbl{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:600}
+.next .name{font-size:30px;font-weight:800;margin:6px 0 2px;color:var(--brand)}
+@media (prefers-color-scheme: dark){ .next .name{color:#6cc3de} }
+.next .when{font-size:15px;color:var(--muted)}
+.next .count{font-variant-numeric:tabular-nums;font-size:34px;font-weight:700;margin-top:12px;letter-spacing:.5px}
+.next .count small{font-size:13px;font-weight:600;color:var(--muted);margin:0 6px 0 2px}
+.notice{background:#fff7e6;border:1px solid #f1d9a6;color:#6b4c0e;border-radius:14px;padding:12px 14px;font-size:14px}
+@media (prefers-color-scheme: dark){ .notice{background:#2b2312;border-color:#5a4720;color:#f1d9a6} }
+h2{font-size:15px;margin:0 0 12px;display:flex;justify-content:space-between;align-items:baseline}
+h2 span{font-size:12px;color:var(--muted);font-weight:500}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600;text-align:center;padding:0 2px 8px}
+th:first-child{text-align:left}
+td{padding:11px 2px;text-align:center;border-top:1px solid var(--line);font-size:15px}
+td:first-child{text-align:left}
+td .d{font-weight:700;display:block}
+td .s{font-size:12px;color:var(--muted)}
+td.multi{font-size:13.5px;line-height:1.35}
+td .sun{display:block;font-size:10px;color:var(--muted)}
+tr.today td{background:var(--today)}
+tr.today td:first-child{border-radius:10px 0 0 10px} tr.today td:last-child{border-radius:0 10px 10px 0}
+tr.past{opacity:.45}
+.nextcell{color:var(--brand);font-weight:800}
+@media (prefers-color-scheme: dark){ .nextcell{color:#6cc3de} }
+.wk{margin-top:18px} .wk:first-child{margin-top:0}
+.wk-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+.btn{flex:1 1 140px;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--text);text-decoration:none;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit}
+.btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn.wa{background:#25d366;border-color:#25d366;color:#06381b}
+.info p{margin:0 0 12px;color:var(--muted);font-size:14px;line-height:1.5}
+.bank{display:grid;grid-template-columns:auto 1fr auto;gap:10px 12px;align-items:center;font-size:14px}
+.bank .k{color:var(--muted)} .bank .v{font-weight:700;font-variant-numeric:tabular-nums}
+.copy{border:1px solid var(--line);background:transparent;color:var(--brand);border-radius:8px;padding:5px 10px;font-weight:600;font-size:12px;cursor:pointer}
+.toggle{background:none;border:none;color:var(--brand);font-weight:600;font-size:13px;padding:10px 0 0;cursor:pointer}
+.install{display:none;align-items:center;gap:12px;font-size:14px}
+.install b{display:block}
+.install .x{margin-left:auto;background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer}
+footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 20px}
+.empty{text-align:center;color:var(--muted);padding:10px 0}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#14232a;color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <img src="icons/icon-192.png" alt="">
+    <div><h1>Mill Lane Muslim Association</h1><p id="subtitle">Prayer times · Chadwell Heath</p></div>
+  </div>
+</header>
+
+<main>
+  <section class="card next" id="next">
+    <div class="lbl">Loading…</div>
+  </section>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <section class="card install" id="install">
+    <div id="installText"></div>
+    <button class="btn primary" id="installBtn" style="flex:0 0 auto;display:none">Install</button>
+    <button class="x" id="installClose" aria-label="Dismiss">×</button>
+  </section>
+
+  <section class="card" id="thisWeek"></section>
+  <section class="card" id="month"></section>
+
+  <section class="card info">
+    <h2>Visit us</h2>
+    <p>United Reformed Church Hall, Mill Lane, Chadwell Heath, RM6 6RS.<br>Open Friday, Saturday &amp; Sunday only.</p>
+    <div class="btnrow">
+      <a class="btn primary" id="mapsBtn" target="_blank" rel="noopener">Directions</a>
+      <a class="btn" id="callBtn">Call</a>
+      <a class="btn wa" id="waBtn" target="_blank" rel="noopener">WhatsApp group</a>
+    </div>
+  </section>
+
+  <section class="card info">
+    <h2>Donate <span>Charity no. 1204287</span></h2>
+    <p>Please donate generously to support the prayer hall.</p>
+    <div class="bank" id="bank"></div>
+  </section>
+
+  <footer id="foot"></footer>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="common.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let DATA = null, EVENTS = [];
+const IS_TEST = /\.github\.io$/.test(location.hostname) && location.pathname.split("/").filter(Boolean).some(x=>!/\.html$/.test(x));
+
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1600); }
+
+async function load(){
+  try{
+    const r = await fetch("times.json?t=" + Date.now(), { cache: "no-store" });
+    DATA = await r.json();
+    try{ localStorage.setItem("times:"+location.pathname, JSON.stringify(DATA)); }catch(e){}
+  }catch(e){
+    try{ DATA = JSON.parse(localStorage.getItem("times:"+location.pathname)); }catch(_){}
+  }
+  if(!DATA){ $("next").innerHTML = '<div class="lbl">Offline</div><div class="when">Could not load prayer times.</div>'; return; }
+  DATA.days.sort((a,b)=>a.date.localeCompare(b.date));
+  EVENTS = [];
+  for(const day of DATA.days) for(const p of PRAYERS) for(const t of prayerTimes(day,p.key))
+    EVENTS.push({ at: atTime(day.date,t.text), date: day.date, key: p.key,
+      label: (p.key==="zuhr" && isFriday(day.date)) ? p.fridayLabel : p.label });
+  render(); tick();
+}
+
+function cell(day, key, nextEv){
+  const ts = prayerTimes(day, key);
+  if(!ts.length) return "<td>–</td>";
+  const isNext = nextEv && nextEv.date===day.date && nextEv.key===key;
+  const inner = ts.map(t=>t.text).join("<br>") + (ts[0].sunset ? '<span class="sun">sunset</span>' : "");
+  return `<td class="${ts.length>1?"multi ":""}${isNext?"nextcell":""}">${inner}</td>`;
+}
+
+function table(days, nextEv){
+  const today = isoDate(new Date());
+  const rows = days.map(d=>{
+    const dt = parseISO(d.date);
+    const cls = d.date===today ? "today" : (d.date<today ? "past" : "");
+    return `<tr class="${cls}"><td><span class="d">${dt.toLocaleDateString("en-GB",{weekday:"short"})}</span><span class="s">${dt.getDate()} ${dt.toLocaleDateString("en-GB",{month:"short"})}</span></td>`
+      + PRAYERS.map(p=>cell(d,p.key,nextEv)).join("") + "</tr>";
+  }).join("");
+  return `<table><thead><tr><th>Day</th><th>Zuhr / Jumu'ah</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+/* group days into Fri–Sun weekends (or any run of days within the same week) */
+function weekends(days){
+  const groups = [];
+  for(const d of days){
+    const dt = parseISO(d.date), k = new Date(dt); k.setDate(dt.getDate() - ((dt.getDay()+2)%7)); // week starting Friday
+    const key = isoDate(k);
+    let g = groups.find(x=>x.key===key); if(!g){ g={key,days:[]}; groups.push(g); }
+    g.days.push(d);
+  }
+  return groups;
+}
+
+let showPast = false;
+function render(){
+  const now = new Date(), today = isoDate(now);
+  const nextEv = EVENTS.find(e=>e.at>now);
+  $("subtitle").textContent = (IS_TEST ? "TEST VERSION · " : "") + (DATA.title ? `Prayer times · ${DATA.title}` : "Prayer times · Chadwell Heath");
+  if(DATA.notice){ $("notice").hidden=false; $("notice").textContent = DATA.notice; } else $("notice").hidden = true;
+
+  const groups = weekends(DATA.days);
+  const cur = groups.find(g=>g.days[g.days.length-1].date>=today);
+  $("thisWeek").innerHTML = cur
+    ? `<h2>${cur.days.some(d=>d.date===today) ? "This weekend" : "Coming up"} <span>Jama'at times</span></h2>` + table(cur.days, nextEv)
+    : `<h2>Timetable</h2><div class="empty">The new timetable will appear here soon.<br>Check the WhatsApp group for updates.</div>`;
+
+  const rest = groups.filter(g=>g!==cur && (showPast || g.days[0].date>today));
+  const hasPast = groups.some(g=>g!==cur && g.days[0].date<=today);
+  $("month").hidden = !rest.length && !hasPast;
+  $("month").innerHTML = `<h2>${DATA.title||"This month"} <span>Updated ${DATA.updated? parseISO(DATA.updated).toLocaleDateString("en-GB",{day:"numeric",month:"short"}) : ""}</span></h2>`
+    + rest.map(g=>`<div class="wk"><div class="wk-title">${weekTitle(g)}</div>${table(g.days,nextEv)}</div>`).join("")
+    + (hasPast ? `<button class="toggle" id="pastBtn">${showPast?"Hide":"Show"} past weeks</button>` : "")
+    + (!rest.length && !showPast ? `<div class="empty">No more weekends listed yet.</div>` : "");
+  const pb=$("pastBtn"); if(pb) pb.onclick=()=>{ showPast=!showPast; render(); };
+}
+function weekTitle(g){
+  const a=parseISO(g.days[0].date), b=parseISO(g.days[g.days.length-1].date);
+  const m = b.toLocaleDateString("en-GB",{month:"short"});
+  return a.getDate()===b.getDate() ? `${a.getDate()} ${m}` : `${a.getDate()} – ${b.getDate()} ${m}`;
+}
+
+let lastNextKey = null;
+function tick(){
+  if(!EVENTS.length) return;
+  const now = new Date(), ev = EVENTS.find(e=>e.at>now);
+  const key = ev ? ev.at.getTime()+ev.key : "none";
+  if(key!==lastNextKey){ lastNextKey=key; render(); }
+  if(!ev){
+    $("next").innerHTML = `<div class="lbl">Next prayer</div><div class="when" style="margin-top:8px">No upcoming times yet — the new timetable is on its way.</div>`;
+    return;
+  }
+  const diff = Math.max(0, Math.floor((ev.at-now)/1000));
+  const d=Math.floor(diff/86400), h=Math.floor(diff%86400/3600), m=Math.floor(diff%3600/60), s=diff%60;
+  const evDay = isoDate(ev.at), tmr = new Date(now); tmr.setDate(tmr.getDate()+1);
+  const dayTxt = evDay===isoDate(now) ? "Today" : evDay===isoDate(tmr) ? "Tomorrow" : ev.at.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"short"});
+  const count = (d? `${d}<small>d</small>`:"") + `${h}<small>h</small>${pad(m)}<small>m</small>` + (d? "" : `${pad(s)}<small>s</small>`);
+  $("next").innerHTML = `<div class="lbl">Next jama'at</div><div class="name">${ev.label}</div>
+    <div class="when">${dayTxt} at <b>${fmtTime(ev.at)}</b>${ev.key==="maghrib"?" (after sunset)":""}</div>
+    <div class="count">${count}</div>`;
+}
+
+function setupInfo(){
+  $("mapsBtn").href = MOSQUE.maps; $("callBtn").href = "tel:" + MOSQUE.phoneIntl; $("waBtn").href = MOSQUE.whatsapp;
+  const b = MOSQUE.bank;
+  const rows = [["Bank", b.name], ["Name", b.account, true], ["Sort code", b.sort, true], ["Account", b.number, true]];
+  $("bank").innerHTML = rows.map(([k,v,c])=>`<span class="k">${k}</span><span class="v">${v}</span>${c?`<button class="copy" data-v="${v}">Copy</button>`:"<span></span>"}`).join("");
+  $("bank").onclick = async e=>{
+    const v = e.target.dataset && e.target.dataset.v; if(!v) return;
+    try{ await navigator.clipboard.writeText(v); toast("Copied " + v); }catch(_){ toast(v); }
+  };
+  $("foot").innerHTML = `<a href="${MOSQUE.website}" style="color:inherit">mill-lane-muslim-association.org.uk</a>`;
+}
+
+/* Install helpers */
+function setupInstall(){
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  let dismissed=false; try{ dismissed = localStorage.getItem("installDismissed")==="1"; }catch(e){}
+  if(standalone || dismissed) return;
+  const box=$("install"), txt=$("installText");
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  $("installClose").onclick=()=>{ box.style.display="none"; try{localStorage.setItem("installDismissed","1");}catch(e){} };
+  if(ios){
+    txt.innerHTML = `<b>Add to your Home Screen</b>Tap the Share button <span aria-hidden="true">⬆︎</span> in Safari, then “Add to Home Screen”.`;
+    box.style.display="flex";
+  }
+  window.addEventListener("beforeinstallprompt", e=>{
+    e.preventDefault();
+    txt.innerHTML = `<b>Install the app</b>Get prayer times on your home screen.`;
+    const btn=$("installBtn"); btn.style.display="block"; box.style.display="flex";
+    btn.onclick = async ()=>{ e.prompt(); await e.userChoice; box.style.display="none"; };
+  });
+}
+
+setupInfo(); setupInstall(); load();
+setInterval(tick, 1000);
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) load(); });
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+</script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Timetable Admin</title>
+<meta name="theme-color" content="#0f607c">
+<link rel="icon" href="icons/icon-192.png">
+<style>
+:root{--brand:#0f607c;--bg:#f3f6f7;--card:#fff;--text:#14232a;--muted:#5d6f77;--line:#dbe4e8;--bad:#b42318;--good:#137a3f}
+@media (prefers-color-scheme: dark){:root{--bg:#0c1518;--card:#13222a;--text:#e8f0f2;--muted:#93a8b0;--line:#26404c}}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--brand);color:#fff;padding:16px}
+header h1{margin:0 auto;font-size:17px;max-width:760px}
+main{max-width:760px;margin:0 auto;padding:14px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+h2{font-size:15px;margin:0 0 10px}
+p.help{font-size:13px;color:var(--muted);margin:0 0 10px;line-height:1.5}
+label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:4px}
+input,textarea,select{width:100%;font:inherit;font-size:16px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text)}
+textarea{min-height:90px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.row>*{flex:1 1 140px}
+button{font:inherit;font-weight:600;font-size:14px;padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer}
+button.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+button.small{padding:6px 10px;font-size:12px}
+.days{display:flex;flex-direction:column;gap:8px}
+.day{display:grid;grid-template-columns:88px 1.3fr 1fr 1.2fr 1fr 30px;gap:6px;align-items:center}
+.day input{padding:7px 8px;font-size:15px}
+.day .dl{font-size:13px;font-weight:700;line-height:1.2}
+.day .dl small{display:block;font-weight:500;color:var(--muted)}
+.day.fri{border-top:1px solid var(--line);padding-top:10px;margin-top:4px}
+.day .del{border:none;background:none;color:var(--muted);font-size:18px;padding:0}
+.hdr{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:.5px}
+@media (max-width:560px){
+  .day{grid-template-columns:1fr 1fr 28px;background:var(--bg);padding:10px;border-radius:12px}
+  .day .dl{grid-column:1/3}
+  .day .del{grid-column:3;grid-row:1}
+  .day.fri{border-top:none;margin-top:10px}
+  .hdr{display:none}
+  .day input::placeholder{color:var(--muted)}
+}
+#status{font-size:14px;padding:10px 12px;border-radius:10px;display:none}
+#status.ok{display:block;background:#e7f6ec;color:var(--good)}
+#status.err{display:block;background:#fdecea;color:var(--bad)}
+#status.info{display:block;background:#eef5f8;color:var(--brand)}
+details summary{cursor:pointer;font-weight:700;font-size:15px}
+a{color:var(--brand)}
+.env{padding:12px 14px;border-radius:12px;font-weight:700;font-size:14px;text-align:center}
+.env.live{background:#e7f6ec;color:#137a3f}
+.env.test{background:#fff1d6;color:#8a5a00}
+</style>
+</head>
+<body>
+<header><h1>Mill Lane · Timetable admin</h1></header>
+<main>
+<div id="envBanner" hidden></div>
+
+<section class="card">
+  <h2>1. Start a month</h2>
+  <p class="help">Pick the month from the new WhatsApp timetable. This creates Friday, Saturday and Sunday rows with the usual times filled in — you then just correct Asr and Isha.</p>
+  <div class="row">
+    <div><label>Month</label><input type="month" id="month"></div>
+    <div><label>Title shown in app</label><input id="title" placeholder="November 2026 / 1448"></div>
+    <button id="genBtn" style="flex:0 0 auto">Create weekends</button>
+  </div>
+</section>
+
+<section class="card">
+  <details>
+    <summary>Shortcut: paste text from the photo</summary>
+    <p class="help" style="margin-top:10px">On iPhone, open the WhatsApp photo, press and hold the text to select it (Live Text) and Copy. On Android use Google Lens → “Copy text”. Paste it here and tap Read. Always check the result below.</p>
+    <textarea id="paste" placeholder="Friday 6 12:30 & 13:00 15:00 After Sunset 18:30 …"></textarea>
+    <div class="row" style="margin-top:8px"><button id="parseBtn" style="flex:0 0 auto">Read pasted text</button></div>
+  </details>
+</section>
+
+<section class="card">
+  <h2>2. Check the times</h2>
+  <p class="help">Changing Friday's Asr or Isha copies it to that Saturday and Sunday. Write “After Sunset” for Maghrib to show the live sunset time. Leave a box empty if there is no jama'at.</p>
+  <div class="day hdr" id="hdr"><span>Day</span><span>Zuhr / Jumu'ah</span><span>Asr</span><span>Maghrib</span><span>Isha</span><span></span></div>
+  <div class="days" id="days"></div>
+  <div class="row" style="margin-top:12px">
+    <div><label>Add an extra day (e.g. Eid)</label><input type="date" id="extraDate"></div>
+    <button id="addBtn" style="flex:0 0 auto">Add day</button>
+  </div>
+  <div style="margin-top:14px"><label>Announcement (optional, shows at top of app)</label>
+    <input id="notice" placeholder="e.g. Eid salah at 8:30am, Sunday"></div>
+</section>
+
+<section class="card">
+  <h2>3. Publish</h2>
+  <div id="status"></div>
+  <div class="row" style="margin-top:10px">
+    <button class="primary" id="pubBtn">Publish to app</button>
+    <button id="dlBtn">Download times.json</button>
+  </div>
+  <details style="margin-top:16px">
+    <summary>GitHub settings (one-time setup)</summary>
+    <p class="help" style="margin-top:10px">Saved only on this device. Use a fine-grained token limited to this one repository with “Contents: Read and write”. See the README for step-by-step instructions.</p>
+    <div class="grid2">
+      <div><label>GitHub username</label><input id="owner" autocomplete="off" autocapitalize="off"></div>
+      <div><label>Repository name</label><input id="repo" autocomplete="off" autocapitalize="off"></div>
+      <div><label>Branch</label><input id="branch" value="main" autocapitalize="off"></div>
+      <div><label>Access token</label><input id="token" type="password" autocomplete="off"></div>
+    </div>
+    <div class="row" style="margin-top:10px"><button id="saveSet" style="flex:0 0 auto">Save settings</button></div>
+  </details>
+</section>
+
+<p class="help" style="text-align:center"><a href="./">← Back to the app</a></p>
+</main>
+
+<script src="common.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let rows = [];
+const store = { get:k=>{try{return localStorage.getItem(k)}catch(e){return null}}, set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}} };
+
+function status(msg, kind="info"){ const s=$("status"); s.className=kind; s.textContent=msg; }
+
+/* On GitHub Pages the repo is worked out from the address, so the TEST admin page
+   can never publish to the LIVE app (and vice versa). The token is shared. */
+function repoFromURL(){
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/i); if(!m) return null;
+  const seg = location.pathname.split("/").filter(Boolean)[0];
+  const repo = (seg && !/\.html$/i.test(seg)) ? seg : `${m[1]}.github.io`;
+  return { owner: m[1], repo, test: !!(seg && !/\.html$/i.test(seg)) };
+}
+function loadSettings(){
+  for(const k of ["owner","repo","branch","token"]){ const v=store.get("gh_"+k); if(v) $(k).value=v; }
+  const r = repoFromURL();
+  if(r){
+    $("owner").value=r.owner; $("repo").value=r.repo; $("owner").readOnly=$("repo").readOnly=true;
+    const b=$("envBanner"); b.hidden=false;
+    b.className = r.test ? "env test" : "env live";
+    b.textContent = r.test ? `TEST app (${r.repo}) — publishing here does NOT change the live app` : "LIVE app — publishing here updates everyone's phones";
+  }
+}
+$("saveSet").onclick=()=>{ for(const k of (repoFromURL()?["branch","token"]:["owner","repo","branch","token"])) store.set("gh_"+k,$(k).value.trim()); status("Settings saved on this device.","ok"); };
+
+/* ---------- editor ---------- */
+function render(){
+  rows.sort((a,b)=>a.date.localeCompare(b.date));
+  $("days").innerHTML = rows.map((r,i)=>{
+    const d=parseISO(r.date), fri=d.getDay()===5;
+    return `<div class="day ${fri?"fri":""}" data-i="${i}">
+      <div class="dl">${d.toLocaleDateString("en-GB",{weekday:"short"})} ${d.getDate()} ${d.toLocaleDateString("en-GB",{month:"short"})}<small>${fri?"Jumu'ah":"&nbsp;"}</small></div>
+      <input data-k="zuhr" value="${r.zuhr||""}" placeholder="${fri?"Jumu'ah":"Zuhr"}">
+      <input data-k="asar" value="${r.asar||""}" placeholder="Asr" inputmode="decimal">
+      <input data-k="maghrib" value="${r.maghrib||""}" placeholder="Maghrib">
+      <input data-k="isha" value="${r.isha||""}" placeholder="Isha" inputmode="decimal">
+      <button class="del" title="Remove day" data-del="${i}">×</button></div>`;
+  }).join("") || `<p class="help">No days yet — create a month above.</p>`;
+}
+$("days").addEventListener("input", e=>{
+  const k=e.target.dataset.k; if(!k) return;
+  const i=+e.target.closest(".day").dataset.i, r=rows[i], old=r[k];
+  r[k]=e.target.value;
+  if(parseISO(r.date).getDay()===5 && (k==="asar"||k==="isha"||k==="maghrib")){
+    for(let j=i+1;j<rows.length && j<=i+2;j++){
+      const dd=(parseISO(rows[j].date)-parseISO(r.date))/864e5;
+      if(dd<=2 && (!rows[j][k] || rows[j][k]===old)){
+        rows[j][k]=r[k];
+        const inp=document.querySelector(`.day[data-i="${j}"] input[data-k="${k}"]`); if(inp) inp.value=r[k];
+      }
+    }
+  }
+});
+$("days").addEventListener("click", e=>{
+  const i=e.target.dataset.del; if(i===undefined) return;
+  rows.splice(+i,1); render();
+});
+
+function monthWeekends(ym){
+  const [y,m]=ym.split("-").map(Number), out=[];
+  for(let d=new Date(y,m-1,1); d.getMonth()===m-1; d.setDate(d.getDate()+1))
+    if([5,6,0].includes(d.getDay())) out.push(isoDate(d));
+  return out;
+}
+function hijriYear(ym){
+  try{ const [y,m]=ym.split("-").map(Number);
+    return new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{year:"numeric"}).format(new Date(y,m-1,15)).replace(/\D/g,""); }catch(e){ return ""; }
+}
+$("month").addEventListener("change", ()=>{
+  const ym=$("month").value; if(!ym) return;
+  const [y,m]=ym.split("-").map(Number);
+  const name=new Date(y,m-1,1).toLocaleDateString("en-GB",{month:"long",year:"numeric"}), h=hijriYear(ym);
+  $("title").value = name + (h?` / ${h}`:"");
+});
+$("genBtn").onclick=()=>{
+  const ym=$("month").value; if(!ym) return status("Pick a month first.","err");
+  if(rows.some(r=>r.date.startsWith(ym)) && !confirm("Replace the days already entered for this month?")) return;
+  rows = rows.filter(r=>!r.date.startsWith(ym));
+  for(const date of monthWeekends(ym)){
+    const fri=parseISO(date).getDay()===5;
+    rows.push({date, zuhr: fri?"12:30 & 13:00":"13:00", asar:"", maghrib:"After Sunset", isha:""});
+  }
+  if(!$("title").value) $("month").dispatchEvent(new Event("change"));
+  render(); status("Weekends created — now fill in Asr and Isha from the timetable.","info");
+};
+$("addBtn").onclick=()=>{
+  const d=$("extraDate").value; if(!d) return;
+  if(rows.some(r=>r.date===d)) return status("That day is already in the list.","err");
+  rows.push({date:d, zuhr:"", asar:"", maghrib:"After Sunset", isha:""}); render();
+};
+
+/* ---------- paste parser (text copied from the photo) ---------- */
+$("parseBtn").onclick=()=>{
+  const ym=$("month").value; if(!ym) return status("Pick the month first, then paste.","err");
+  const [y,m]=ym.split("-").map(Number);
+  const text=$("paste").value.replace(/\s+/g," ");
+  const re=/(Friday|Saturday|Sunday)\s+(\d{1,2})\s+(\d{1,2}[:.]\d{2}(?:\s*&\s*\d{1,2}[:.]\d{2})?)\s+(\d{1,2}[:.]\d{2})\s+(After\s+Sunset|\d{1,2}[:.]\d{2})\s+(\d{1,2}[:.]\d{2})/gi;
+  let mm, found=0;
+  while((mm=re.exec(text))){
+    const date=`${y}-${pad(m)}-${pad(+mm[2])}`; const fix=t=>t.replace(".",":");
+    const r={date, zuhr:fix(mm[3]).replace(/\s*&\s*/," & "), asar:fix(mm[4]), maghrib:/sunset/i.test(mm[5])?"After Sunset":fix(mm[5]), isha:fix(mm[6])};
+    rows=rows.filter(x=>x.date!==date); rows.push(r); found++;
+  }
+  render();
+  status(found ? `Read ${found} days — please check them against the photo.` : "Couldn't read that text. Please type the times into the boxes instead.", found?"ok":"err");
+};
+
+/* ---------- output ---------- */
+function buildJSON(){
+  const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-40);
+  const days=rows.filter(r=>parseISO(r.date)>=cutoff).map(r=>({date:r.date,zuhr:r.zuhr.trim(),asar:r.asar.trim(),maghrib:r.maghrib.trim(),isha:r.isha.trim()}));
+  const bad=days.filter(r=>[r.asar,r.isha].some(v=>v && !/^\d{1,2}:\d{2}$/.test(v)));
+  if(bad.length) throw new Error("Check the time format (use 14:45 style) on " + bad.map(b=>b.date).join(", "));
+  return JSON.stringify({title:$("title").value.trim(), updated:isoDate(new Date()), notice:$("notice").value.trim(), days}, null, 1) + "\n";
+}
+$("dlBtn").onclick=()=>{
+  try{ const blob=new Blob([buildJSON()],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="times.json"; a.click();
+  }catch(e){ status(e.message,"err"); }
+};
+const b64 = s => btoa(unescape(encodeURIComponent(s)));
+$("pubBtn").onclick=async()=>{
+  let body; try{ body=buildJSON(); }catch(e){ return status(e.message,"err"); }
+  const owner=$("owner").value.trim(), repo=$("repo").value.trim(), branch=$("branch").value.trim()||"main", token=$("token").value.trim();
+  if(!owner||!repo||!token){ document.querySelector("details:last-of-type").open=true; return status("Fill in the GitHub settings first (bottom of this page).","err"); }
+  for(const k of (repoFromURL()?["branch","token"]:["owner","repo","branch","token"])) store.set("gh_"+k,$(k).value.trim());
+  const api=`https://api.github.com/repos/${owner}/${repo}/contents/times.json`;
+  const headers={Authorization:`Bearer ${token}`,Accept:"application/vnd.github+json"};
+  status("Publishing…","info");
+  try{
+    const cur=await fetch(`${api}?ref=${branch}&t=${Date.now()}`,{headers,cache:"no-store"});
+    const sha = cur.ok ? (await cur.json()).sha : undefined;
+    const res=await fetch(api,{method:"PUT",headers,body:JSON.stringify({message:`Update timetable: ${$("title").value||"times"}`,content:b64(body),branch,sha})});
+    if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(`${res.status}: ${j.message||"GitHub refused the update"}`); }
+    status("Published! Everyone's app will show the new times within a minute or two.","ok");
+  }catch(e){
+    status("Publish failed — " + e.message + ". Check the token and repository name.","err");
+  }
+};
+
+/* load what's live now */
+(async()=>{
+  loadSettings();
+  try{
+    const d=await (await fetch("times.json?t="+Date.now(),{cache:"no-store"})).json();
+    rows=d.days||[]; $("title").value=d.title||""; $("notice").value=d.notice||"";
+  }catch(e){}
+  const n=new Date(); n.setMonth(n.getMonth()+(n.getDate()>20?1:0));
+  $("month").value=`${n.getFullYear()}-${pad(n.getMonth()+1)}`;
+  render();
+})();
+</script>
+</body>
+</html>
