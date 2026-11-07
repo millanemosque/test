@@ -1,6 +1,6 @@
 {
  "title": "December 2026 / 1448",
- "updated": "2026-11-06",
+ "updated": "2026-11-07",
  "notice": "[TEST] December test",
  "days": [
   {
@@ -170,6 +170,13 @@
    "asar": "14:30",
    "maghrib": "After Sunset",
    "isha": "18:30"
+  },
+  {
+   "date": "2027-02-12",
+   "zuhr": "Fajr",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": ""
   }
  ]
 }
