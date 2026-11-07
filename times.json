@@ -1,7 +1,7 @@
 {
- "title": "December 2026 / 1448",
+ "title": "Ramadan 1448",
  "updated": "2026-11-07",
- "notice": "[TEST] December test",
+ "notice": "TEST RAMADAN TIMETABLE",
  "days": [
   {
    "date": "2026-11-06",
@@ -172,11 +172,355 @@
    "isha": "18:30"
   },
   {
+   "date": "2027-02-08",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-09",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-10",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-11",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
    "date": "2027-02-12",
-   "zuhr": "Fajr",
+   "fajr": "04:30",
+   "zuhr": "12:30 & 13:00",
+   "asar": "02:00",
+   "maghrib": "After Sunset",
+   "isha": "18:00",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-13",
+   "fajr": "04:30",
+   "zuhr": "13:00",
+   "asar": "02:00",
+   "maghrib": "After Sunset",
+   "isha": "18:00",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-14",
+   "fajr": "04:30",
+   "zuhr": "13:00",
+   "asar": "02:00",
+   "maghrib": "After Sunset",
+   "isha": "18:00",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-15",
+   "fajr": "04:30",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "18:00",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-16",
+   "fajr": "04:30",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "18:00",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-17",
+   "fajr": "04:30",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "18:00",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-18",
+   "fajr": "04:30",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "18:00",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-19",
+   "fajr": "",
+   "zuhr": "12:30 & 13:00",
    "asar": "",
    "maghrib": "After Sunset",
-   "isha": ""
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-20",
+   "fajr": "",
+   "zuhr": "13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-21",
+   "fajr": "",
+   "zuhr": "13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-22",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-23",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-24",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-25",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-26",
+   "fajr": "",
+   "zuhr": "12:30 & 13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-27",
+   "fajr": "",
+   "zuhr": "13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-02-28",
+   "fajr": "",
+   "zuhr": "13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-01",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-02",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-03",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-04",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-05",
+   "fajr": "",
+   "zuhr": "12:30 & 13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-06",
+   "fajr": "",
+   "zuhr": "13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-07",
+   "fajr": "",
+   "zuhr": "13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-08",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-09",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-10",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-11",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-12",
+   "fajr": "",
+   "zuhr": "12:30 & 13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-13",
+   "fajr": "",
+   "zuhr": "13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-14",
+   "fajr": "",
+   "zuhr": "13:00",
+   "asar": "",
+   "maghrib": "After Sunset",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-15",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-16",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-17",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
+  },
+  {
+   "date": "2027-03-18",
+   "fajr": "",
+   "zuhr": "",
+   "asar": "",
+   "maghrib": "",
+   "isha": "",
+   "taraweeh": "After Isha"
   }
  ]
 }
