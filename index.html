@@ -56,6 +56,12 @@ td .sun{display:block;font-size:10px;color:var(--muted)}
 tr.today td{background:var(--today)}
 tr.today td:first-child{border-radius:10px 0 0 10px} tr.today td:last-child{border-radius:0 10px 10px 0}
 tr.past{opacity:.45}
+td.note{font-size:11px;line-height:1.25;color:var(--muted)}
+table.compact th{font-size:9.5px;letter-spacing:.2px;padding:0 1px 8px}
+table.compact td{font-size:13.5px;padding:10px 1px}
+table.compact td.multi{font-size:12px}
+table.compact td .d{font-size:13.5px}
+table.compact td .s{font-size:11px}
 .nextcell{color:var(--brand);font-weight:800}
 @media (prefers-color-scheme: dark){ .nextcell{color:#6cc3de} }
 .wk{margin-top:18px} .wk:first-child{margin-top:0}
@@ -142,7 +148,7 @@ async function load(){
   if(!DATA){ $("next").innerHTML = '<div class="lbl">Offline</div><div class="when">Could not load prayer times.</div>'; return; }
   DATA.days.sort((a,b)=>a.date.localeCompare(b.date));
   EVENTS = [];
-  for(const day of DATA.days) for(const p of PRAYERS) for(const t of prayerTimes(day,p.key))
+  for(const day of DATA.days) for(const p of PRAYERS) for(const t of prayerTimes(day,p.key)) if(!t.note)
     EVENTS.push({ at: atTime(day.date,t.text), date: day.date, key: p.key,
       label: (p.key==="zuhr" && isFriday(day.date)) ? p.fridayLabel : p.label });
   render(); tick();
@@ -151,6 +157,7 @@ async function load(){
 function cell(day, key, nextEv){
   const ts = prayerTimes(day, key);
   if(!ts.length) return "<td>–</td>";
+  if(ts[0].note) return `<td class="note">${ts[0].text.replace(/[<>&]/g,"")}</td>`;
   const isNext = nextEv && nextEv.date===day.date && nextEv.key===key;
   const inner = ts.map(t=>t.text).join("<br>") + (ts[0].sunset ? '<span class="sun">sunset</span>' : "");
   return `<td class="${ts.length>1?"multi ":""}${isNext?"nextcell":""}">${inner}</td>`;
@@ -158,13 +165,16 @@ function cell(day, key, nextEv){
 
 function table(days, nextEv){
   const today = isoDate(new Date());
+  const cols = PRAYERS.filter(p=>!p.optional || days.some(d=>(d[p.key]||"").trim()));
+  const compact = cols.length > 4;
   const rows = days.map(d=>{
     const dt = parseISO(d.date);
     const cls = d.date===today ? "today" : (d.date<today ? "past" : "");
     return `<tr class="${cls}"><td><span class="d">${dt.toLocaleDateString("en-GB",{weekday:"short"})}</span><span class="s">${dt.getDate()} ${dt.toLocaleDateString("en-GB",{month:"short"})}</span></td>`
-      + PRAYERS.map(p=>cell(d,p.key,nextEv)).join("") + "</tr>";
+      + cols.map(p=>cell(d,p.key,nextEv)).join("") + "</tr>";
   }).join("");
-  return `<table><thead><tr><th>Day</th><th>Zuhr / Jumu'ah</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr></thead><tbody>${rows}</tbody></table>`;
+  const head = cols.map(p=>`<th>${p.key==="zuhr" ? (compact ? "Zuhr" : "Zuhr / Jumu'ah") : p.label}</th>`).join("");
+  return `<table class="${compact?"compact":""}"><thead><tr><th>Day</th>${head}</tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 /* group days into Fri–Sun weekends (or any run of days within the same week) */
@@ -189,7 +199,7 @@ function render(){
   const groups = weekends(DATA.days);
   const cur = groups.find(g=>g.days[g.days.length-1].date>=today);
   $("thisWeek").innerHTML = cur
-    ? `<h2>${cur.days.some(d=>d.date===today) ? "This weekend" : "Coming up"} <span>Jama'at times</span></h2>` + table(cur.days, nextEv)
+    ? `<h2>${!cur.days.some(d=>d.date===today) ? "Coming up" : cur.days.some(d=>![5,6,0].includes(parseISO(d.date).getDay())) ? "This week" : "This weekend"} <span>Jama'at times</span></h2>` + table(cur.days, nextEv)
     : `<h2>Timetable</h2><div class="empty">The new timetable will appear here soon.<br>Check the WhatsApp group for updates.</div>`;
 
   const rest = groups.filter(g=>g!==cur && (showPast || g.days[0].date>today));

@@ -14,10 +14,12 @@ const MOSQUE = {
 };
 
 const PRAYERS = [
+  { key: "fajr", label: "Fajr", optional: true },        // Ramadan
   { key: "zuhr", label: "Zuhr", fridayLabel: "Jumu'ah" },
   { key: "asar", label: "Asr" },
   { key: "maghrib", label: "Maghrib" },
-  { key: "isha", label: "Isha" }
+  { key: "isha", label: "Isha" },
+  { key: "taraweeh", label: "Taraweeh", optional: true } // Ramadan
 ];
 
 const pad = n => String(n).padStart(2, "0");
@@ -41,7 +43,7 @@ function sunset(dateObj, lat = MOSQUE.lat, lon = MOSQUE.lon) {
   return new Date((Jt + w / 360 - 2440587.5) * 864e5);
 }
 
-/* "12:30 & 13:00" -> ["12:30","13:00"]; "sunset"/"After Sunset" -> sunset time */
+/* "12:30 & 13:00" -> two times; "After Sunset" -> sunset time; other text (e.g. "After Isha") -> a note */
 function prayerTimes(day, key) {
   const raw = (day[key] || "").trim();
   if (!raw) return [];
@@ -50,7 +52,9 @@ function prayerTimes(day, key) {
     s.setSeconds(0, 0); s.setMinutes(s.getMinutes() + 1);   // round up
     return [{ text: fmtTime(s), sunset: true }];
   }
-  return (raw.match(/\d{1,2}[:.]\d{2}/g) || []).map(t => ({ text: t.replace(".", ":").padStart(5, "0") }));
+  const times = raw.match(/\d{1,2}[:.]\d{2}/g);
+  if (!times) return [{ text: raw, note: true }];          // e.g. "After Isha"
+  return times.map(t => ({ text: t.replace(".", ":").padStart(5, "0") }));
 }
 
 function atTime(dateStr, hhmm) {

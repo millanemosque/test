@@ -37,8 +37,11 @@ button.small{padding:6px 10px;font-size:12px}
 .hdr{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:.5px}
 .f{display:block;min-width:0}
 .f span{display:none}
+.opt{display:none}
+.extra .opt{display:block}
+.extra .day{grid-template-columns:88px 1fr 1.3fr 1fr 1.2fr 1fr 1.1fr 30px}
 @media (max-width:560px){
-  .day{grid-template-columns:1fr 1fr;background:var(--bg);padding:10px;border-radius:12px;position:relative}
+  .day,.extra .day{grid-template-columns:1fr 1fr;background:var(--bg);padding:10px;border-radius:12px;position:relative}
   .day .dl{grid-column:1/3}
   .day .del{position:absolute;top:8px;right:10px}
   .day.fri{border-top:none;margin-top:10px}
@@ -72,6 +75,18 @@ a{color:var(--brand)}
 </section>
 
 <section class="card">
+  <details id="ramDetails">
+    <summary>Ramadan: create every day</summary>
+    <p class="help" style="margin-top:10px">Adds every day of Ramadan with boxes for <b>Fajr</b> and <b>Taraweeh</b>. Fajr, Isha and Taraweeh are filled in daily; Zuhr, Asr and Maghrib on Friday–Sunday as usual. The dates are suggested from the Umm al-Qura calendar — change them to match the local announcement.</p>
+    <div class="row">
+      <div><label>First day of Ramadan</label><input type="date" id="ramFrom"></div>
+      <div><label>Last day</label><input type="date" id="ramTo"></div>
+      <button id="ramBtn" style="flex:0 0 auto">Create Ramadan days</button>
+    </div>
+  </details>
+</section>
+
+<section class="card">
   <details>
     <summary>Shortcut: paste text from the photo</summary>
     <p class="help" style="margin-top:10px">On iPhone, open the WhatsApp photo, press and hold the text to select it (Live Text) and Copy. On Android use Google Lens → “Copy text”. Paste it here and tap Read. Always check the result below.</p>
@@ -80,10 +95,10 @@ a{color:var(--brand)}
   </details>
 </section>
 
-<section class="card">
+<section class="card" id="editor">
   <h2>2. Check the times</h2>
-  <p class="help">Changing Friday's Asr or Isha copies it to that Saturday and Sunday. Write “After Sunset” for Maghrib to show the live sunset time. Leave a box empty if there is no jama'at.</p>
-  <div class="day hdr" id="hdr"><span>Day</span><span>Zuhr / Jumu'ah</span><span>Asr</span><span>Maghrib</span><span>Isha</span><span></span></div>
+  <p class="help">Changing Friday's Asr or Isha copies it to that Saturday and Sunday. Write “After Sunset” for Maghrib to show the live sunset time. Leave a box empty if there is no jama'at. In Ramadan, Fajr, Isha and Taraweeh copy forward to the rest of that week (up to Thursday).</p>
+  <div class="day hdr" id="hdr"><span>Day</span><span class="opt">Fajr</span><span>Zuhr / Jumu'ah</span><span>Asr</span><span>Maghrib</span><span>Isha</span><span class="opt">Taraweeh</span><span></span></div>
   <div class="days" id="days"></div>
   <div class="row" style="margin-top:12px">
     <div><label>Add an extra day (e.g. Eid)</label><input type="date" id="extraDate"></div>
@@ -145,30 +160,43 @@ function loadSettings(){
 $("saveSet").onclick=()=>{ for(const k of (repoFromURL()?["branch","token"]:["owner","repo","branch","token"])) store.set("gh_"+k,$(k).value.trim()); status("Settings saved on this device.","ok"); };
 
 /* ---------- editor ---------- */
+const hasExtra = () => rows.some(r=>r.fajr!==undefined || r.taraweeh!==undefined);
 function render(){
   rows.sort((a,b)=>a.date.localeCompare(b.date));
+  $("editor").classList.toggle("extra", hasExtra());
   $("days").innerHTML = rows.map((r,i)=>{
     const d=parseISO(r.date), fri=d.getDay()===5;
     return `<div class="day ${fri?"fri":""}" data-i="${i}">
       <div class="dl">${d.toLocaleDateString("en-GB",{weekday:"short"})} ${d.getDate()} ${d.toLocaleDateString("en-GB",{month:"short"})}<small>${fri?"Jumu'ah":"&nbsp;"}</small></div>
+      <label class="f opt"><span>Fajr</span><input data-k="fajr" value="${r.fajr||""}" placeholder="Fajr" inputmode="decimal"></label>
       <label class="f"><span>${fri?"Jumu'ah":"Zuhr"}</span><input data-k="zuhr" value="${r.zuhr||""}" placeholder="${fri?"Jumu'ah":"Zuhr"}"></label>
       <label class="f"><span>Asr</span><input data-k="asar" value="${r.asar||""}" placeholder="Asr" inputmode="decimal"></label>
       <label class="f"><span>Maghrib</span><input data-k="maghrib" value="${r.maghrib||""}" placeholder="Maghrib"></label>
       <label class="f"><span>Isha</span><input data-k="isha" value="${r.isha||""}" placeholder="Isha" inputmode="decimal"></label>
+      <label class="f opt"><span>Taraweeh</span><input data-k="taraweeh" value="${r.taraweeh||""}" placeholder="Taraweeh"></label>
       <button class="del" title="Remove day" data-del="${i}">×</button></div>`;
   }).join("") || `<p class="help">No days yet — create a month above.</p>`;
 }
+function setCell(j,k,v){ rows[j][k]=v; const inp=document.querySelector(`.day[data-i="${j}"] input[data-k="${k}"]`); if(inp) inp.value=v; }
 $("days").addEventListener("input", e=>{
   const k=e.target.dataset.k; if(!k) return;
-  const i=+e.target.closest(".day").dataset.i, r=rows[i], old=r[k];
+  const i=+e.target.closest(".day").dataset.i, r=rows[i], old=r[k]||"";
   r[k]=e.target.value;
-  if(parseISO(r.date).getDay()===5 && (k==="asar"||k==="isha"||k==="maghrib")){
-    for(let j=i+1;j<rows.length && j<=i+2;j++){
-      const dd=(parseISO(rows[j].date)-parseISO(r.date))/864e5;
-      if(dd<=2 && (!rows[j][k] || rows[j][k]===old)){
-        rows[j][k]=r[k];
-        const inp=document.querySelector(`.day[data-i="${j}"] input[data-k="${k}"]`); if(inp) inp.value=r[k];
-      }
+  const start=parseISO(r.date);
+  if(k==="fajr"||k==="isha"||k==="taraweeh"){
+    // copy forward through the rest of this Fri–Thu week (stops at the next Friday)
+    for(let j=i+1;j<rows.length;j++){
+      const d=parseISO(rows[j].date);
+      if(d.getDay()===5 || (d-start)/864e5>6) break;
+      if(rows[j][k]===undefined && k!=="isha") continue;
+      if(!rows[j][k] || rows[j][k]===old) setCell(j,k,r[k]);
+    }
+  } else if(start.getDay()===5 && (k==="asar"||k==="maghrib")){
+    for(let j=i+1;j<rows.length;j++){
+      const d=parseISO(rows[j].date), dd=(d-start)/864e5;
+      if(dd>2) break;
+      if(d.getDay()!==6 && d.getDay()!==0) continue;
+      if(!rows[j][k] || rows[j][k]===old) setCell(j,k,r[k]);
     }
   }
 });
@@ -195,9 +223,11 @@ $("month").addEventListener("change", ()=>{
 });
 $("genBtn").onclick=()=>{
   const ym=$("month").value; if(!ym) return status("Pick a month first.","err");
-  if(rows.some(r=>r.date.startsWith(ym)) && !confirm("Replace the days already entered for this month?")) return;
-  rows = rows.filter(r=>!r.date.startsWith(ym));
+  const isRam = r => r.fajr!==undefined || r.taraweeh!==undefined;
+  if(rows.some(r=>r.date.startsWith(ym) && !isRam(r)) && !confirm("Replace the days already entered for this month? (Ramadan days are kept.)")) return;
+  rows = rows.filter(r=>!r.date.startsWith(ym) || isRam(r));
   for(const date of monthWeekends(ym)){
+    if(rows.some(r=>r.date===date)) continue;
     const fri=parseISO(date).getDay()===5;
     rows.push({date, zuhr: fri?"12:30 & 13:00":"13:00", asar:"", maghrib:"After Sunset", isha:""});
   }
@@ -207,7 +237,35 @@ $("genBtn").onclick=()=>{
 $("addBtn").onclick=()=>{
   const d=$("extraDate").value; if(!d) return;
   if(rows.some(r=>r.date===d)) return status("That day is already in the list.","err");
-  rows.push({date:d, zuhr:"", asar:"", maghrib:"After Sunset", isha:""}); render();
+  rows.push(Object.assign({date:d, zuhr:"", asar:"", maghrib:"After Sunset", isha:""}, hasExtra()?{fajr:"",taraweeh:""}:{})); render();
+};
+
+/* ---------- Ramadan ---------- */
+const hijriParts = d => { const o={}; for(const p of new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{day:"numeric",month:"numeric",year:"numeric"}).formatToParts(d)) o[p.type]=p.value; return {m:+o.month, y:(o.year||"").replace(/\D/g,"")}; };
+function suggestRamadan(){
+  try{
+    const d=new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()-30);
+    for(let n=0;n<420;n++,d.setDate(d.getDate()+1)){
+      if(hijriParts(d).m===9){
+        const from=new Date(d); while(hijriParts(d).m===9) d.setDate(d.getDate()+1);
+        d.setDate(d.getDate()-1);
+        if(d >= new Date(Date.now()-864e5)) { $("ramFrom").value=isoDate(from); $("ramTo").value=isoDate(d); return; }
+      }
+    }
+  }catch(e){}
+}
+$("ramBtn").onclick=()=>{
+  const a=$("ramFrom").value, b=$("ramTo").value;
+  if(!a||!b||b<a) return status("Pick the first and last day of Ramadan.","err");
+  const inRange = r => r.date>=a && r.date<=b;
+  if(rows.some(inRange) && !confirm("Replace the days already entered between these dates?")) return;
+  rows = rows.filter(r=>!inRange(r));
+  for(let d=parseISO(a); isoDate(d)<=b; d.setDate(d.getDate()+1)){
+    const dow=d.getDay(), wk=[5,6,0].includes(dow);
+    rows.push({date:isoDate(d), fajr:"", zuhr: wk?(dow===5?"12:30 & 13:00":"13:00"):"", asar:"", maghrib: wk?"After Sunset":"", isha:"", taraweeh:"After Isha"});
+  }
+  try{ $("title").value = "Ramadan " + hijriParts(parseISO(a)).y; }catch(e){}
+  render(); status("Ramadan days created — fill in Fajr and Isha (they copy forward to the rest of the week), plus Asr on Fridays.","info");
 };
 
 /* ---------- paste parser (text copied from the photo) ---------- */
@@ -229,8 +287,15 @@ $("parseBtn").onclick=()=>{
 /* ---------- output ---------- */
 function buildJSON(){
   const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-40);
-  const days=rows.filter(r=>parseISO(r.date)>=cutoff).map(r=>({date:r.date,zuhr:r.zuhr.trim(),asar:r.asar.trim(),maghrib:r.maghrib.trim(),isha:r.isha.trim()}));
-  const bad=days.filter(r=>[r.asar,r.isha].some(v=>v && !/^\d{1,2}:\d{2}$/.test(v)));
+  const t = v => (v||"").trim();
+  const days=rows.filter(r=>parseISO(r.date)>=cutoff).map(r=>{
+    const o={date:r.date};
+    if(r.fajr!==undefined) o.fajr=t(r.fajr);
+    Object.assign(o,{zuhr:t(r.zuhr),asar:t(r.asar),maghrib:t(r.maghrib),isha:t(r.isha)});
+    if(r.taraweeh!==undefined) o.taraweeh=t(r.taraweeh);
+    return o;
+  });
+  const bad=days.filter(r=>[r.fajr,r.asar,r.isha].some(v=>v && !/^\d{1,2}:\d{2}$/.test(v)));
   if(bad.length) throw new Error("Check the time format (use 14:45 style) on " + bad.map(b=>b.date).join(", "));
   return JSON.stringify({title:$("title").value.trim(), updated:isoDate(new Date()), notice:$("notice").value.trim(), days}, null, 1) + "\n";
 }
@@ -261,7 +326,7 @@ $("pubBtn").onclick=async()=>{
 
 /* load what's live now */
 (async()=>{
-  loadSettings();
+  loadSettings(); suggestRamadan();
   try{
     const d=await (await fetch("times.json?t="+Date.now(),{cache:"no-store"})).json();
     rows=d.days||[]; $("title").value=d.title||""; $("notice").value=d.notice||"";
